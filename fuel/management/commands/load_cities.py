@@ -14,7 +14,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         City.objects.all().delete()
         cities = [City(name=n, name_key=city_key(n), state=st, location=Point(lon, lat, srid=4326))
-                  for n, set, let, lon in read_gazetteer(options["path"])]
+                  for n, st, lat, lon in read_gazetteer(options["path"])]
         City.objects.bulk_create(cities, batch_size=5000)
         self.stdout.write(self.style.SUCCESS(f"Loaded {len(cities)} cities"))
         
