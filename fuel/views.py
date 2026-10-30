@@ -12,28 +12,19 @@ from .services.optimizer import UnreachableRouteError
 from .services.ors_client import RoutingError
 from .services.planner import plan_trip
 
-ERROOR_STATUS = {LocationError: 400, UnreachableRouteError: 422, RoutingError:502}
+ERROR_STATUS = {LocationError: 400, UnreachableRouteError: 422, RoutingError:502}
 
-def _plan(params):
-    query = RouteQuerySerializer(data=params)
-    query.is_valid(raise_exception=True)
-    return plan_trip(resolve(query.validated_data["start"]),
-                     resolve(query.validated_data["finish"]))
-    
+
 class RoutePlanView(APIView):
+
     def get(self, request):
         t0 = time.perf_counter()
+        query = RouteQuerySerializer(data=request.query_params)
+        query.is_valid(raise_exception=True) 
         try:
-            result = _plan(request.querty_params)
-        except tuple(ERROOR_STATUS) as exc:
-            return Response({"error": str(exc)}, status=ERROOR_STATUS[type(exc)])
-        result["map_url"] = request.build_absolute_uri(reverse("route-map")) + "?" + request.GET.urlencode()
+            result = plan_trip(resolve(query.validated_data["start"]),
+                               resolve(query.validated_data["finish"]))
+        except tuple(ERROR_STATUS) as exc:
+            return Response({"error": str(exc)}, status=ERROR_STATUS[type(exc)])
         result["elapsed_ms"] = round((time.perf_counter() - t0) * 1000, 1)
         return Response(result)
-            
-# def route_map(request):
-#     try:
-#         result = _plan(request.GET)
-#     except (ValidationError, *ERROOR_STATUS) as exc:
-#         return HttpResponseBadRequest(str(exc))
-#     return render(request, "fuel")

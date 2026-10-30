@@ -88,7 +88,7 @@ DATABASES = {
 CACHES = {
     'default' : {
         'BACKEND': "django.core.cache.backends.redis.RedisCache",
-        "LOCATION" : os.environ.get("REDIS_URL"),
+        "LOCATION": os.environ.get("REDIS_URL", "redis://localhost:6379/0"),
         "TIMEOUT" : 60 * 60 *24
     }
 }
