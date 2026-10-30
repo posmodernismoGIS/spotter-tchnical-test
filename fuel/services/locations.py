@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from fuel.geoutils import city_key
 from fuel.models import City
-
+from .optimizer import Station
 LATLON_RE = re.compile(r"^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$")
 
 
