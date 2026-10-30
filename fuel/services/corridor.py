@@ -3,7 +3,7 @@ from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import Distance
 from django.db import connection
 from fuel.models import FuelStation
-
+from .optimizer import Station
 
 METERS_PER_MILE = 1609.344
 
